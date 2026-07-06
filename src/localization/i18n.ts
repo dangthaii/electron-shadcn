@@ -7,19 +7,19 @@ i18n.use(initReactI18next).init({
     en: {
       translation: {
         appName: "electron-shadcn",
-        titleHomePage: "Home Page",
-        titleSecondPage: "Second Page",
         documentation: "Documentation",
         madeBy: "Made by LuanRoger",
+        titleHomePage: "Home Page",
+        titleSecondPage: "Second Page",
       },
     },
     "pt-BR": {
       translation: {
         appName: "electron-shadcn",
-        titleHomePage: "Página Inicial",
-        titleSecondPage: "Segunda Página",
         documentation: "Documentação",
         madeBy: "Feito por LuanRoger",
+        titleHomePage: "Página Inicial",
+        titleSecondPage: "Segunda Página",
       },
     },
   },

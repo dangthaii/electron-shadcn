@@ -15,9 +15,9 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
   ],
   resolve: {
-    preserveSymlinks: true,
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
     },
+    preserveSymlinks: true,
   },
 });

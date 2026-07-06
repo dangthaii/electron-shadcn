@@ -12,8 +12,6 @@ class IPCManager {
 
   private readonly rpcLink: RPCLink<ClientContext>;
 
-  private initialized = false;
-
   readonly client: RPCClient;
 
   constructor() {
@@ -29,14 +27,9 @@ class IPCManager {
   }
 
   initialize() {
-    if (this.initialized) {
-      return;
-    }
-
     this.clientPort.start();
 
     window.postMessage(IPC_CHANNELS.START_ORPC_SERVER, "*", [this.serverPort]);
-    this.initialized = true;
   }
 }
 
