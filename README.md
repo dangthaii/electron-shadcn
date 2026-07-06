@@ -10,7 +10,7 @@ To develop a Electron app, you probably will need some UI, test, formatter, styl
 
 ### Core 🏍️
 
-- [Electron 42](https://www.electronjs.org)
+- [Electron 43](https://www.electronjs.org)
 - [Vite 8](https://vitejs.dev)
 
 ### DX 🛠️
