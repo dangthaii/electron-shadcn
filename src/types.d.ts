@@ -3,3 +3,9 @@
 // whether you're running in development or production).
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME: string;
+
+// Vite: import file as raw string (e.g. `import code from "./script.js?raw"`).
+declare module "*?raw" {
+  const content: string;
+  export default content;
+}

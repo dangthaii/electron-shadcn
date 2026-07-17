@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
 import { getAppVersion } from "@/actions/app";
-import { runExampleAction } from "@/actions/example";
+import { runExport, runImport } from "@/actions/unload";
 import ExternalLink from "@/components/external-link";
 import LangToggle from "@/components/lang-toggle";
 import NavigationMenu from "@/components/navigation-menu";
@@ -20,8 +20,8 @@ function HomePage() {
 
   const [appVersion, setAppVersion] = useState("0.0.0");
   const [, startGetAppVersion] = useTransition();
-  const [exampleMessage, setExampleMessage] = useState<string | null>(null);
-  const [isRunning, setIsRunning] = useState(false);
+  const [busy, setBusy] = useState<null | "export" | "import">(null);
+  const [output, setOutput] = useState<string>("");
   const { t } = useTranslation();
 
   useEffect(
@@ -29,13 +29,34 @@ function HomePage() {
     []
   );
 
-  const handleRunAction = async () => {
-    setIsRunning(true);
+  const handleExport = async () => {
+    setBusy("export");
+    setOutput("");
     try {
-      const message = await runExampleAction();
-      setExampleMessage(message);
+      const { path } = await runExport();
+      setOutput(`Đã export xong → ${path}`);
+    } catch (error) {
+      setOutput(`Export lỗi: ${String(error)}`);
     } finally {
-      setIsRunning(false);
+      setBusy(null);
+    }
+  };
+
+  const handleImport = async () => {
+    setBusy("import");
+    setOutput("");
+    try {
+      const { data, path, exists } = await runImport();
+      if (!exists) {
+        setOutput(`Chưa có data.json. Hãy bấm Export trước.\n${path}`);
+        return;
+      }
+      console.log("Import data:", data);
+      setOutput(JSON.stringify(data, null, 2));
+    } catch (error) {
+      setOutput(`Import lỗi: ${String(error)}`);
+    } finally {
+      setBusy(null);
     }
   };
 
@@ -44,15 +65,23 @@ function HomePage() {
       <NavigationMenu />
       <div className="flex h-full flex-col items-center justify-center">
 
-        <div className="mt-6 flex flex-col items-center gap-2">
-          <Button
-            disabled={isRunning}
-            onClick={() => void handleRunAction()}
-          >
-            {isRunning ? "Đang chạy..." : "Chạy thử"}
-          </Button>
-          {exampleMessage && (
-            <p className="text-muted-foreground text-sm">{exampleMessage}</p>
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <div className="flex gap-2">
+            <Button disabled={busy !== null} onClick={() => void handleExport()}>
+              {busy === "export" ? "Đang export..." : "Export"}
+            </Button>
+            <Button
+              disabled={busy !== null}
+              onClick={() => void handleImport()}
+              variant="secondary"
+            >
+              {busy === "import" ? "Đang import..." : "Import"}
+            </Button>
+          </div>
+          {output && (
+            <pre className="max-w-xl overflow-auto rounded-md border bg-muted/40 p-3 text-xs">
+              {output}
+            </pre>
           )}
         </div>
       </div>

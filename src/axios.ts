@@ -42,7 +42,7 @@ export async function runSL(
       console.log(message);
     });
 
-    const result = JSON.parse(data?.ticket?.queryReturn);
+    const result = JSON.parse(data?.ticket?.queryReturn) || {};
     return { result, messages };
   } catch (error) {
     console.error("Error running SL:", error);
