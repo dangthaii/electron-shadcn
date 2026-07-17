@@ -2,38 +2,33 @@
  * Cấu hình dùng chung cho export & import.
  * Tôi code chán lắm rồi
  * Còn cái gì hay hơn không thì cứ sửa nhé.
- * Inject vào SL script dưới dạng `var unloadConfig = {...}`.
- * Bên trong SM code truy cập qua `unloadConfig.<key>`.
  *
- * Mỗi section gồm:
- *   - tableName: tên bảng trên SM
- *   - searchKey: trường dùng để tìm bản ghi (mặc định 'name')
- *   - files:     danh sách file/record cần xử lý
+ * Hai biến inject vào SL:
+ *   var unloadFiles  = { sl: [...], ... }    // data: danh sách file cần xử lý
+ *   var unloadConfig = { sl: {tableName,...},... } // metadata: cách truy vấn
+ *
+ * Cùng share keys (sl / wizard / do) để SL code dễ pair.
  */
+
+export type UnloadFileItems = Array<{ name: string }>;
+export type UnloadFiles = Record<string, UnloadFileItems>;
+
 export type UnloadSection = {
   tableName: string;
   searchKey: string;
-  files: Array<{ name: string }>;
 };
-
 export type UnloadConfig = Record<string, UnloadSection>;
 
+export const unloadFiles: UnloadFiles = {
+  sl: [{ name: "ESD_MS_KMS*" }],
+  // wizard: [{ name: "ESD MS KMS LIST" }],
+  do: [{ name: "esdMSkmsPackages.*" }]
+};
+
 export const unloadConfig: UnloadConfig = {
-  sl: {
-    tableName: "ScriptLibrary",
-    searchKey: "name",
-    files: [{ name: "ESD_MS_KMS*" }]
-  },
-  // wizard: {
-  //   tableName: "wizard",
-  //   searchKey: "name",
-  //   files: [{ name: "ESD MS KMS LIST" }]
-  // },
-  do: {
-    tableName: "displayoption",
-    searchKey: "id",
-    files: [{ name: "esdMSkmsPackages.*" }]
-  }
+  sl: { tableName: "ScriptLibrary", searchKey: "name" },
+  // wizard: { tableName: "wizard", searchKey: "name" },
+  do: { tableName: "displayoption", searchKey: "id" }
 };
 
 /**

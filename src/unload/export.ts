@@ -7,11 +7,11 @@
 import { runSL } from "@/axios";
 import { ipc } from "@/ipc/manager";
 import exportSL from "@/unload/sm/export.js?raw";
-import { buildSL, unloadConfig } from "@/unload/utils";
+import { buildSL, unloadConfig, unloadFiles } from "@/unload/utils";
 
 export async function runExport(): Promise<{ path: string; result: unknown }> {
   try {
-    const script = buildSL({ unloadConfig }, exportSL);
+    const script = buildSL({ unloadConfig, unloadFiles }, exportSL);
     const { result } = await runSL(script);
     const { path } = await ipc.client.unload.writeUnloadData({ data: result });
     return { path, result };
