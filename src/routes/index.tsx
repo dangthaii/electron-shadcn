@@ -46,13 +46,13 @@ function HomePage() {
     setBusy("import");
     setOutput("");
     try {
-      const { data, path, exists } = await runImport();
+      const { result, exists, path } = await runImport();
       if (!exists) {
         setOutput(`Chưa có data.json. Hãy bấm Export trước.\n${path}`);
         return;
       }
-      console.log("Import data:", data);
-      setOutput(JSON.stringify(data, null, 2));
+      console.log("Import result:", result);
+      setOutput(JSON.stringify(result, null, 2));
     } catch (error) {
       setOutput(`Import lỗi: ${String(error)}`);
     } finally {

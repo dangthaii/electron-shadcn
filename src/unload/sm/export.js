@@ -5,12 +5,23 @@ for (var key in exportFiles) {
     apiResult.sl = arr.map((item) => {
       var record = lib.ESD_Utils.getOneRecordFull(
         "ScriptLibrary",
-        `name = "${item.name}"`,
-        item.name
+        `name = "${item.name}"`
       );
       return record;
     });
   }
-}
 
-print("okela", JSON.stringify(apiResult));
+  if (key === "wizard") {
+    apiResult.wizard = arr.map((item) => {
+      var record = lib.ESD_Utils.getOneRecordFull("wizard", `name = "${item.name}"`);
+      return record;
+    });
+  }
+
+  if (key === "do") {
+    apiResult.do = arr.map((item) => {
+      var record = lib.ESD_Utils.getOneRecordFull("displayoption", `id = "${item.name}"`);
+      return record;
+    });
+  }
+}

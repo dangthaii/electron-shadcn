@@ -13,6 +13,16 @@ const exportFiles = {
     {
       name: "ESD_master"
     }
+  ],
+  wizard: [
+    {
+      name: "ESD MS KMS LIST"
+    }
+  ],
+  do: [
+    {
+      name: "esdMSkmsPackages.view_add_lot"
+    }
   ]
 };
 
