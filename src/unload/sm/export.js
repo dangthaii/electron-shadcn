@@ -1,27 +1,15 @@
+// Duyệt qua từng section trong unloadConfig (inject từ src/unload/utils.ts),
+// lấy full record theo tableName + searchKey cho mỗi file.
 apiResult = {};
-for (var key in exportFiles) {
-  var arr = exportFiles[key];
-  if (key === "sl") {
-    apiResult.sl = arr.map((item) => {
-      var record = lib.ESD_Utils.getOneRecordFull(
-        "ScriptLibrary",
-        `name = "${item.name}"`
-      );
-      return record;
-    });
-  }
+for (var key in unloadConfig) {
+  var data = [];
+  var section = unloadConfig[key];
+  section.files.map(function (item) {
+    var query = `${section.searchKey} LIKE "${item.name}"`;
+    print("🚀 ~ query:", query);
+    var result = lib.ESD_Utils.fetchDataFull(section.tableName, query);
+    data = data.concat(result);
+  });
 
-  if (key === "wizard") {
-    apiResult.wizard = arr.map((item) => {
-      var record = lib.ESD_Utils.getOneRecordFull("wizard", `name = "${item.name}"`);
-      return record;
-    });
-  }
-
-  if (key === "do") {
-    apiResult.do = arr.map((item) => {
-      var record = lib.ESD_Utils.getOneRecordFull("displayoption", `id = "${item.name}"`);
-      return record;
-    });
-  }
+  apiResult[key] = data;
 }
