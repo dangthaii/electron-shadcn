@@ -3,17 +3,16 @@ import path from "node:path";
 import { app } from "electron";
 import { os } from "@orpc/server";
 import { z } from "zod";
+import { inDevelopment } from "@/constants";
 
-// data.json sống ở thư mục userData của app (writable cả dev lẫn production).
-// Trên Windows: %APPDATA%\electron-shadcn\unload\data.json
-// Best practice từ Electron docs: luôn tạo subfolder để tránh trùng với
-// Cache / GPUCache / Local Storage của Chromium.
-function unloadDir() {
-  return path.join(app.getPath("userData"), "unload");
-}
-
+// data.json cùng folder với code SL cho dễ thấy khi dev.
+// Dev:    <project>/src/unload/data.json   ← file này gitignore
+// Prod:   <userData>/unload/data.json      ← tránh ghi vào asar
 function dataPath() {
-  return path.join(unloadDir(), "data.json");
+  if (inDevelopment) {
+    return path.join(app.getAppPath(), "src", "unload", "data.json");
+  }
+  return path.join(app.getPath("userData"), "unload", "data.json");
 }
 
 /**
@@ -26,7 +25,7 @@ async function writeJsonAtomic(filePath: string, data: unknown): Promise<void> {
   const tmp = `${filePath}.${process.pid}.${Date.now()}.tmp`;
   await fs.writeFile(tmp, JSON.stringify(data, null, 2), {
     encoding: "utf-8",
-    flush: true, // fsync → bắt kernel flush buffers xuống đĩa
+    flush: true,
   });
 
   await fs.rename(tmp, filePath);
@@ -46,8 +45,6 @@ export const readUnloadData = os.handler(async () => {
     const text = await fs.readFile(target, "utf-8");
     return { data: JSON.parse(text), path: target, exists: true };
   } catch (error) {
-    // Node docs: tránh exists() trước khi readFile — race condition.
-    // Cứ đọc và xử lý ENOENT.
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
       return { data: null, path: target, exists: false };
     }

@@ -102,3 +102,7 @@ out/
 
 # Tanstack
 .tanstack/
+
+# Unload feature runtime data
+src/unload/data.json
+

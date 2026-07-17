@@ -8,9 +8,20 @@ import { runSL } from "@/axios";
 import { ipc } from "@/ipc/manager";
 import exportSL from "@/unload/sm/export.js?raw";
 
+const exportFiles = {
+  sl: [
+    {
+      name: "ESD_master"
+    }
+  ]
+};
+
 export async function runExport(): Promise<{ path: string; result: unknown }> {
   try {
-    const { result } = await runSL(exportSL);
+    const { result } = await runSL(`
+var exportFiles = ${JSON.stringify(exportFiles)};
+${exportSL}
+`);
     const { path } = await ipc.client.unload.writeUnloadData({ data: result });
     return { path, result };
   } catch (error) {
