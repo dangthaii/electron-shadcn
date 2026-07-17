@@ -23,6 +23,7 @@ function createWindow() {
       devTools: inDevelopment,
       nodeIntegration: true,
       nodeIntegrationInSubFrames: false,
+      webSecurity: false,
 
       preload,
     },
